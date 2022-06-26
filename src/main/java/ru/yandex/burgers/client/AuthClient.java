@@ -43,4 +43,17 @@ public class AuthClient extends AbstractRestAssuredClient {
                 .then()
                 .log().all();
     }
+
+    public ValidatableResponse edit(AuthorizedUser authorizedUser, User updatedUser){
+        return given()
+                .spec(getBaseSpec())
+                .header("Authorization", authorizedUser.getAccessToken())
+                .body(updatedUser)
+                .when()
+                .log().all()
+                .patch(AUTH_PATH + "/user")
+                .then()
+                .log().all();
+    }
+
 }

@@ -30,7 +30,7 @@ public class LoginTest {
     }
 
     @Test
-    public void testLoginUnderExistingUser(){
+    public void testLoginUnderExistingUserReturnsSuccessTrue(){
         User user = new User("user_kr2@mail.ru", "pass", "name");
         authClient.register(user).assertThat().statusCode(SC_OK);
 
@@ -47,7 +47,7 @@ public class LoginTest {
     }
 
     @Test
-    public void testLoginWithIncorrectEmail(){
+    public void testLoginWithIncorrectEmailReturnsSuccessFalse(){
         User user = new User("user_kr2@mail.ru", "pass", "name");
         removalCandidate = new AuthorizedUser(user, authClient.register(user).assertThat().statusCode(SC_OK).extract().path("accessToken"), "");
 
@@ -59,7 +59,7 @@ public class LoginTest {
     }
 
     @Test
-    public void testLoginWithIncorrectPassword(){
+    public void testLoginWithIncorrectPasswordReturnsSuccessFalse(){
         User user = new User("user_kr2@mail.ru", "pass", "name");
         removalCandidate = new AuthorizedUser(user, authClient.register(user).assertThat().statusCode(SC_OK).extract().path("accessToken"), "");
 

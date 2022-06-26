@@ -1,6 +1,7 @@
 package ru.yandex.burgers;
 
 import io.restassured.response.ValidatableResponse;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -16,14 +17,20 @@ import static org.apache.http.HttpStatus.SC_FORBIDDEN;
 @RunWith(Parameterized.class)
 public class RegisterWithoutRequiredFieldTest {
 
-    private String email;
-    private String password;
-    private String name;
+    private final String email;
+    private final String password;
+    private final String name;
+    private AuthClient authClient;
 
     public RegisterWithoutRequiredFieldTest(String email, String pass, String name) {
         this.email = email;
         this.password = pass;
         this.name = name;
+    }
+
+    @Before
+    public void setUp() {
+        authClient = new AuthClient();
     }
 
     @Parameterized.Parameters
@@ -38,7 +45,6 @@ public class RegisterWithoutRequiredFieldTest {
     @Test
     public void testRegisterWithoutRequiredField(){
         User user = new User(email, password, name);
-        AuthClient authClient = new AuthClient();
         ValidatableResponse responseOfRegister = authClient.register(user);
         responseOfRegister
                 .assertThat()
