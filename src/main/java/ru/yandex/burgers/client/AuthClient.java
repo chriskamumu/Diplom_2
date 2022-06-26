@@ -1,7 +1,6 @@
 package ru.yandex.burgers.client;
 
 import io.restassured.response.ValidatableResponse;
-import ru.yandex.burgers.model.AuthorizedUser;
 import ru.yandex.burgers.model.User;
 import ru.yandex.burgers.model.UserCredentials;
 
@@ -33,10 +32,10 @@ public class AuthClient extends AbstractRestAssuredClient {
                 .log().all();
     }
 
-    public ValidatableResponse delete(AuthorizedUser authorizedUser){
+    public ValidatableResponse delete(String accessToken){
         return given()
                 .spec(getBaseSpec())
-                .header("Authorization", authorizedUser.getAccessToken())
+                .header("Authorization", accessToken)
                 .when()
                 .log().all()
                 .delete(AUTH_PATH + "/user")
@@ -44,10 +43,10 @@ public class AuthClient extends AbstractRestAssuredClient {
                 .log().all();
     }
 
-    public ValidatableResponse edit(AuthorizedUser authorizedUser, User updatedUser){
+    public ValidatableResponse edit(String accessToken, User updatedUser){
         return given()
                 .spec(getBaseSpec())
-                .header("Authorization", authorizedUser.getAccessToken())
+                .header("Authorization", accessToken)
                 .body(updatedUser)
                 .when()
                 .log().all()
