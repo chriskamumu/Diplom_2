@@ -1,5 +1,6 @@
 package ru.yandex.burgers;
 
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import org.junit.After;
 import org.junit.Assert;
@@ -42,6 +43,7 @@ public class GetUserOrdersTest {
     }
 
     @Test
+    @DisplayName("check getting user orders by authorized user")
     public void testGetUserOrdersByAuthorizedUserReturnsAccessTrue() {
         String orderId = ordersClient.create(new Order(List.of(ingredientsList.get(0))), accessToken).extract().path("order._id");
         ValidatableResponse responseOfGettingOrders = ordersClient.getUserOrders(accessToken);
@@ -55,6 +57,7 @@ public class GetUserOrdersTest {
     }
 
     @Test
+    @DisplayName("check getting user orders without authorization")
     public void testGetUserOrdersWithoutAuthorizationReturnsAccessFalse() {
         ValidatableResponse responseOfGettingOrders = ordersClient.getUserOrders("");
         responseOfGettingOrders.assertThat()

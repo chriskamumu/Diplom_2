@@ -1,5 +1,6 @@
 package ru.yandex.burgers;
 
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import org.junit.After;
 import org.junit.Before;
@@ -41,6 +42,7 @@ public class CreateOrderTest {
     }
 
     @Test
+    @DisplayName("check order creation with ingredients by authorized user ")
     public void testCreateOrderByAuthorizedUserWithIngredientsReturnsSuccessTrue(){
         Order order = new Order(List.of(ingredientsList.get(0), ingredientsList.get(1)));
         ValidatableResponse responseOfOrderCreating = ordersClient.create(order, accessToken);
@@ -59,6 +61,7 @@ public class CreateOrderTest {
     }
 
     @Test
+    @DisplayName("check order creation without ingredients by authorized user")
     public void testCreateOrderByAuthorizedUserWithoutIngredientsReturnsSuccessFalse(){
         Order order = new Order(List.of());
         ValidatableResponse responseOfCreating = ordersClient.create(order, accessToken);
@@ -69,6 +72,7 @@ public class CreateOrderTest {
     }
 
     @Test
+    @DisplayName("check order creation with nonexistent ingredients by authorized user")
     public void testCreateOrderByAuthorizedUserWithNonexistentIngredientsReturnsSuccessFalse(){
         Order order = new Order(List.of("6497837493"));
         ValidatableResponse responseOfCreating = ordersClient.create(order, accessToken);
@@ -77,6 +81,7 @@ public class CreateOrderTest {
     }
 
     @Test
+    @DisplayName("check order creation with ingredients without authorization")
     public void testCreateOrderWithoutAuthorizationWithIngredientsReturnsSuccessTrue(){
         Order order = new Order(List.of(ingredientsList.get(0), ingredientsList.get(1)));
         ValidatableResponse responseOfOrderCreating = ordersClient.create(order, "");
@@ -95,6 +100,7 @@ public class CreateOrderTest {
     }
 
     @Test
+    @DisplayName("check order creation without ingredients and without authorization")
     public void testCreateOrderWithoutAuthorizationWithoutIngredientsReturnsSuccessFalse(){
         Order order = new Order(List.of());
         ValidatableResponse responseOfCreating = ordersClient.create(order, "");
@@ -105,6 +111,7 @@ public class CreateOrderTest {
     }
 
     @Test
+    @DisplayName("check order creation with nonexistent ingredients without authorization")
     public void testCreateOrderWithoutAuthorizationWithNonexistentIngredientsReturnsSuccessFalse(){
         Order order = new Order(List.of("6497837493"));
         ValidatableResponse responseOfCreating = ordersClient.create(order, "");

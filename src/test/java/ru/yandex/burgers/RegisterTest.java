@@ -1,6 +1,7 @@
 package ru.yandex.burgers;
 
 
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import org.junit.After;
 import org.junit.Before;
@@ -31,6 +32,7 @@ public class RegisterTest {
     }
 
     @Test
+    @DisplayName("check user registration with all required fields")
     public void testRegisterUserWithAllFieldsReturnsSuccessTrue(){
         User user = new User("testkr3@mail.ru", "pass", "kristina");
 
@@ -48,6 +50,7 @@ public class RegisterTest {
     }
 
     @Test
+    @DisplayName("check registration of user that already exists")
     public void testRegisterUserThatAlreadyExistsReturnsSuccessFalse(){
         User user = new User("testkr3@mail.ru", "pass", "kristina");
 

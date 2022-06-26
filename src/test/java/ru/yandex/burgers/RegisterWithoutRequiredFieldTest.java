@@ -1,5 +1,6 @@
 package ru.yandex.burgers;
 
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,6 +44,7 @@ public class RegisterWithoutRequiredFieldTest {
     }
 
     @Test
+    @DisplayName("check user registration without one of required fields")
     public void testRegisterWithoutRequiredField(){
         User user = new User(email, password, name);
         ValidatableResponse responseOfRegister = authClient.register(user);

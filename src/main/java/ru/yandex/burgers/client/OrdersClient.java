@@ -1,5 +1,6 @@
 package ru.yandex.burgers.client;
 
+import io.qameta.allure.Step;
 import io.restassured.response.ValidatableResponse;
 import ru.yandex.burgers.model.Order;
 
@@ -9,6 +10,7 @@ public class OrdersClient extends AbstractRestAssuredClient{
 
     private final static String ORDERS_PATH = "/api/orders";
 
+    @Step("Order creation by sending POST request to /api/orders")
     public ValidatableResponse create(Order order, String accessToken){
         return given()
                 .spec(getBaseSpec())
@@ -22,6 +24,7 @@ public class OrdersClient extends AbstractRestAssuredClient{
 
     }
 
+    @Step("Getting user orders by sending GET request to /api/orders")
     public ValidatableResponse getUserOrders(String accessToken){
         return given()
                 .spec(getBaseSpec())

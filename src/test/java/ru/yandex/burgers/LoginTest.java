@@ -1,5 +1,6 @@
 package ru.yandex.burgers;
 
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import org.junit.After;
 import org.junit.Before;
@@ -29,6 +30,7 @@ public class LoginTest {
     }
 
     @Test
+    @DisplayName("check login under existing user")
     public void testLoginUnderExistingUserReturnsSuccessTrue(){
         User user = new User("user_kr2_rand@mail.ru", "pass", "name");
         authClient.register(user).assertThat().statusCode(SC_OK);
@@ -46,6 +48,7 @@ public class LoginTest {
     }
 
     @Test
+    @DisplayName("check login with incorrect email")
     public void testLoginWithIncorrectEmailReturnsSuccessFalse(){
         User user = new User("user_kr2_rand@mail.ru", "pass", "name");
         accessToken = authClient.register(user).assertThat().statusCode(SC_OK).extract().path("accessToken");
@@ -58,6 +61,7 @@ public class LoginTest {
     }
 
     @Test
+    @DisplayName("check login with incorrect password")
     public void testLoginWithIncorrectPasswordReturnsSuccessFalse(){
         User user = new User("user_kr2_rand@mail.ru", "pass", "name");
         accessToken = authClient.register(user).assertThat().statusCode(SC_OK).extract().path("accessToken");

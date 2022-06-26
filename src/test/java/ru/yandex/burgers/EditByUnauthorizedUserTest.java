@@ -1,5 +1,6 @@
 package ru.yandex.burgers;
 
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import org.junit.After;
 import org.junit.Before;
@@ -56,6 +57,7 @@ public class EditByUnauthorizedUserTest {
     }
 
     @Test
+    @DisplayName("check user editing without authorization")
     public void testEditByUnauthorizedUser(){
         //получаю accessToken для удаления пользователя и регистрирую пользователя, информацию о котором буду пытаться редактировать
         accessToken = authClient.register(oldUser).assertThat().statusCode(SC_OK).extract().path("accessToken");

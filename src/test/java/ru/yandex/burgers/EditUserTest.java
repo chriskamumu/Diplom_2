@@ -1,5 +1,6 @@
 package ru.yandex.burgers;
 
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import org.junit.After;
 import org.junit.Before;
@@ -30,6 +31,7 @@ public class EditUserTest {
     }
 
     @Test
+    @DisplayName("check editing of user's login and name by authorized user")
     public void testEditLoginAndNameByAuthorizedUserReturnsSuccessTrue(){
         User user = new User("test_kr2@mail.ru", "pass", "name");
         String accessToken = authClient.register(user).extract().path("accessToken");
@@ -46,6 +48,7 @@ public class EditUserTest {
     }
 
     @Test
+    @DisplayName("check editing of user's password by authorized user")
     public void testEditPasswordByAuthorizedUserReturnsSuccessTrue(){
         User user = new User("test_kr2@mail.ru", "pass", "name");
         String accessToken = authClient.register(user).extract().path("accessToken");
