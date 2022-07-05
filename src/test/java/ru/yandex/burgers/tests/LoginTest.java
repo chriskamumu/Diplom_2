@@ -1,4 +1,4 @@
-package ru.yandex.burgers;
+package ru.yandex.burgers.tests;
 
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
@@ -8,6 +8,7 @@ import org.junit.Test;
 import ru.yandex.burgers.client.AuthClient;
 import ru.yandex.burgers.model.User;
 import ru.yandex.burgers.model.UserCredentials;
+import ru.yandex.burgers.utils.UserUtils;
 
 import static org.apache.http.HttpStatus.*;
 import static org.hamcrest.CoreMatchers.*;
@@ -15,10 +16,14 @@ import static org.hamcrest.CoreMatchers.*;
 public class LoginTest {
     private AuthClient authClient;
     private String accessToken;
+    private User user;
 
     @Before
     public void setUp() {
         authClient = new AuthClient();
+
+        user = UserUtils.buildRandom();
+        accessToken = authClient.register(user).assertThat().statusCode(SC_OK).extract().path("accessToken");
     }
 
     @After
@@ -32,9 +37,6 @@ public class LoginTest {
     @Test
     @DisplayName("check login under existing user")
     public void testLoginUnderExistingUserReturnsSuccessTrue(){
-        User user = new User("user_kr2_rand@mail.ru", "pass", "name");
-        authClient.register(user).assertThat().statusCode(SC_OK);
-
         ValidatableResponse responseOfLogin = authClient.login(new UserCredentials(user.getEmail(), user.getPassword()));
         responseOfLogin.assertThat()
                 .statusCode(SC_OK)
@@ -43,17 +45,13 @@ public class LoginTest {
                 .body("refreshToken", notNullValue())
                 .body("user.email", equalTo(user.getEmail()))
                 .body("user.name", equalTo(user.getName()));
-        accessToken = responseOfLogin.extract().path("accessToken");
 
     }
 
     @Test
     @DisplayName("check login with incorrect email")
     public void testLoginWithIncorrectEmailReturnsSuccessFalse(){
-        User user = new User("user_kr2_rand@mail.ru", "pass", "name");
-        accessToken = authClient.register(user).assertThat().statusCode(SC_OK).extract().path("accessToken");
-
-        ValidatableResponse responseOfLogin = authClient.login(new UserCredentials("Random_kr_2022", user.getPassword()));
+        ValidatableResponse responseOfLogin = authClient.login(new UserCredentials(UserUtils.getRandomEmail(), user.getPassword()));
         responseOfLogin.assertThat()
                 .statusCode(SC_UNAUTHORIZED)
                 .body("success", equalTo(false))
@@ -63,8 +61,7 @@ public class LoginTest {
     @Test
     @DisplayName("check login with incorrect password")
     public void testLoginWithIncorrectPasswordReturnsSuccessFalse(){
-        User user = new User("user_kr2_rand@mail.ru", "pass", "name");
-        accessToken = authClient.register(user).assertThat().statusCode(SC_OK).extract().path("accessToken");
+
 
         ValidatableResponse responseOfLogin = authClient.login(new UserCredentials(user.getEmail(), "random_password"));
         responseOfLogin.assertThat()

@@ -1,4 +1,4 @@
-package ru.yandex.burgers;
+package ru.yandex.burgers.tests;
 
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
@@ -9,6 +9,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import ru.yandex.burgers.client.AuthClient;
 import ru.yandex.burgers.model.User;
+import ru.yandex.burgers.utils.UserUtils;
+
 import static org.apache.http.HttpStatus.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 
@@ -24,7 +26,7 @@ public class EditByUnauthorizedUserTest {
     private final String newName;
 
     private AuthClient authClient;
-    String accessToken = "";
+    private String accessToken = "";
 
     @Before
     public void setUp() {
@@ -48,11 +50,11 @@ public class EditByUnauthorizedUserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> getTestData(){
-        User user =  new User("random2_kr_email@mail.ru", "pass", "name");
+        User oldUser = UserUtils.buildRandom();
         return Arrays.asList(new Object[][]{
-                {user, "updated_email@randomkr.ru", user.getPassword(), user.getName()},
-                {user, user.getEmail(), "updated_pass", user.getName()},
-                {user, user.getEmail(), user.getPassword(), "updated_name"}
+                {oldUser, UserUtils.getRandomEmail(), oldUser.getPassword(), oldUser.getName()},
+                {oldUser, oldUser.getEmail(), "updated_pass", oldUser.getName()},
+                {oldUser, oldUser.getEmail(), oldUser.getPassword(), "updated_name"}
         });
     }
 

@@ -1,4 +1,4 @@
-package ru.yandex.burgers;
+package ru.yandex.burgers.tests;
 
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
@@ -10,7 +10,7 @@ import ru.yandex.burgers.client.AuthClient;
 import ru.yandex.burgers.client.IngredientsClient;
 import ru.yandex.burgers.client.OrdersClient;
 import ru.yandex.burgers.model.Order;
-import ru.yandex.burgers.model.User;
+import ru.yandex.burgers.utils.UserUtils;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ public class GetUserOrdersTest {
     private AuthClient authClient;
     private OrdersClient ordersClient;
     private List<String> ingredientsList;
-    private String accessToken;
+    private String accessToken = "";
 
     @Before
     public void setUp() {
@@ -31,7 +31,7 @@ public class GetUserOrdersTest {
         ordersClient = new OrdersClient();
         IngredientsClient ingredientsClient = new IngredientsClient();
         ingredientsList = ingredientsClient.get().extract().path("data._id");
-        accessToken = authClient.register(new User("krkr1219_rand@mail.ru", "pass", "name")).extract().path("accessToken");
+        accessToken = authClient.register(UserUtils.buildRandom()).extract().path("accessToken");
     }
 
     @After
