@@ -1,0 +1,73 @@
+package ru.yandex.burgers.tests;
+
+import io.qameta.allure.junit4.DisplayName;
+import io.restassured.response.ValidatableResponse;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import ru.yandex.burgers.client.AuthClient;
+import ru.yandex.burgers.model.User;
+import ru.yandex.burgers.utils.UserUtils;
+
+import static org.apache.http.HttpStatus.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+
+import java.util.Arrays;
+import java.util.Collection;
+
+@RunWith(Parameterized.class)
+public class EditByUnauthorizedUserTest {
+
+    private final User oldUser;
+    private final String newEmail;
+    private final String newPassword;
+    private final String newName;
+
+    private AuthClient authClient;
+    private String accessToken = "";
+
+    @Before
+    public void setUp() {
+        authClient = new AuthClient();
+    }
+
+    @After
+    public void tearDown() {
+        if (!accessToken.equals("")) {
+            authClient.delete(accessToken).assertThat().statusCode(SC_ACCEPTED);
+            accessToken = "";
+        }
+    }
+
+    public EditByUnauthorizedUserTest(User oldUser, String email, String pass, String name) {
+        this.oldUser = oldUser;
+        this.newEmail = email;
+        this.newPassword = pass;
+        this.newName = name;
+    }
+
+    @Parameterized.Parameters
+    public static Collection<Object[]> getTestData(){
+        User oldUser = UserUtils.buildRandom();
+        return Arrays.asList(new Object[][]{
+                {oldUser, UserUtils.getRandomEmail(), oldUser.getPassword(), oldUser.getName()},
+                {oldUser, oldUser.getEmail(), "updated_pass", oldUser.getName()},
+                {oldUser, oldUser.getEmail(), oldUser.getPassword(), "updated_name"}
+        });
+    }
+
+    @Test
+    @DisplayName("check user editing without authorization")
+    public void testEditByUnauthorizedUser(){
+        //получаю accessToken для удаления пользователя и регистрирую пользователя, информацию о котором буду пытаться редактировать
+        accessToken = authClient.register(oldUser).assertThat().statusCode(SC_OK).extract().path("accessToken");
+        User updated_user = new User(newEmail, newPassword, newName);
+        ValidatableResponse responseOfEditing = authClient.edit("", updated_user);
+        responseOfEditing.assertThat()
+                .statusCode(SC_UNAUTHORIZED)
+                .body("success", equalTo(false))
+                .body("message", equalTo("You should be authorised"));
+    }
+}
